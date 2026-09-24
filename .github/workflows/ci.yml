@@ -1,0 +1,37 @@
+name: CI Pipeline
+
+on: 
+  push: 
+    branches: 
+      - main
+
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. GitHub repository se code lena
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Java install/setup karna
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # 3. Java project build karna
+      - name: Build JAR
+        run: ant clean jar
+
+      # 4. Check JAR
+      - name: Check generated JAR
+        run: ls -lh dist/
+
+      # 5. JAR ko GitHub Actions artifact ke roop mein save karna
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-application
+          path: dist/*.jar
